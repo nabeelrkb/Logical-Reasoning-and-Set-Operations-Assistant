@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logical Reasoning & Set Operations Assistant</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .truth-table {
+      border-collapse: collapse;
+    }
+    .truth-table th, .truth-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .relation-matrix {
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .relation-matrix td {
+      border: 1px solid #e2e8f0;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-indigo-700">Logical Reasoning & Set Operations Assistant</h1>
+    
+    <!-- Tab Navigation -->
+    <div class="flex mb-6 bg-white rounded-lg shadow overflow-hidden">
+      <button id="tab-propositional" class="tab-btn flex-1 py-3 px-4 text-center font-medium hover:bg-indigo-50 active-tab bg-indigo-100 text-indigo-700">Propositional Logic</button>
+      <button id="tab-sets" class="tab-btn flex-1 py-3 px-4 text-center font-medium hover:bg-indigo-50">Set Operations</button>
+      <button id="tab-predicate" class="tab-btn flex-1 py-3 px-4 text-center font-medium hover:bg-indigo-50">Predicate Logic</button>
+      <button id="tab-relations" class="tab-btn flex-1 py-3 px-4 text-center font-medium hover:bg-indigo-50">Relations</button>
+    </div>
+
+    <!-- Propositional Logic Tab -->
+    <div id="content-propositional" class="tab-content active bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Propositional Logic & Truth Tables</h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Enter a logical expression:</label>
+        <div class="mb-2">
+          <p class="text-sm text-gray-600 mb-1">Use these symbols:</p>
+          <ul class="text-sm text-gray-600 mb-2 pl-5 list-disc">
+            <li>AND: &amp;&amp; or ∧</li>
+            <li>OR: || or ∨</li>
+            <li>NOT: ! or ¬</li>
+            <li>IMPLIES: -> or →</li>
+            <li>IFF: <-> or ↔</li>
+            <li>Variables: p, q, r, s</li>
+          </ul>
+          <p class="text-sm text-gray-600">Example: (p && q) -> r</p>
+        </div>
+        <input type="text" id="logic-expression" class="w-full p-2 border rounded" placeholder="Enter expression (e.g., p && q -> r)">
+      </div>
+      <button id="generate-truth-table" class="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Generate Truth Table</button>
+      <div id="truth-table-result" class="mt-6"></div>
+    </div>
+
+    <!-- Set Operations Tab -->
+    <div id="content-sets" class="tab-content bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Set Operations</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-gray-700 mb-2">Set A (comma separated):</label>
+          <input type="text" id="set-a" class="w-full p-2 border rounded" placeholder="e.g., 1, 2, 3, 4">
+        </div>
+        <div>
+          <label class="block text-gray-700 mb-2">Set B (comma separated):</label>
+          <input type="text" id="set-b" class="w-full p-2 border rounded" placeholder="e.g., 3, 4, 5, 6">
+        </div>
+      </div>
+      <button id="calculate-sets" class="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Calculate Set Operations</button>
+      <div id="set-results" class="mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div id="set-a-display" class="p-3 border rounded bg-gray-50"></div>
+          <div id="set-b-display" class="p-3 border rounded bg-gray-50"></div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div id="union-result" class="p-3 border rounded bg-gray-50"></div>
+          <div id="intersection-result" class="p-3 border rounded bg-gray-50"></div>
+          <div id="a-minus-b-result" class="p-3 border rounded bg-gray-50"></div>
+          <div id="b-minus-a-result" class="p-3 border rounded bg-gray-50"></div>
+          <div id="symmetric-difference-result" class="p-3 border rounded bg-gray-50"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Predicate Logic Tab -->
+    <div id="content-predicate" class="tab-content bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Predicate Logic</h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Domain (comma separated numbers):</label>
+        <input type="text" id="domain-input" class="w-full p-2 border rounded" placeholder="e.g., 1, 2, 3, 4, 5, 6, 7, 8, 9, 10">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Select Predicate:</label>
+        <select id="predicate-select" class="w-full p-2 border rounded">
+          <option value="even">P(x): x is even</option>
+          <option value="odd">P(x): x is odd</option>
+          <option value="prime">P(x): x is prime</option>
+          <option value="divisible">P(x): x is divisible by...</option>
+          <option value="greater">P(x): x is greater than...</option>
+          <option value="less">P(x): x is less than...</option>
+        </select>
+      </div>
+      <div id="predicate-param-container" class="mb-4 hidden">
+        <label class="block text-gray-700 mb-2" id="predicate-param-label">Parameter:</label>
+        <input type="number" id="predicate-param" class="w-full p-2 border rounded" min="1" value="2">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Quantifier:</label>
+        <select id="quantifier-select" class="w-full p-2 border rounded">
+          <option value="universal">Universal (∀x): For all x in domain</option>
+          <option value="existential">Existential (∃x): There exists at least one x in domain</option>
+        </select>
+      </div>
+      <button id="evaluate-predicate" class="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Evaluate</button>
+      <div id="predicate-result" class="mt-6"></div>
+    </div>
+
+    <!-- Relations Tab -->
+    <div id="content-relations" class="tab-content bg-white p-6 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Relations</h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Set A (comma separated):</label>
+        <input type="text" id="relation-set" class="w-full p-2 border rounded" placeholder="e.g., 1, 2, 3, 4">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2">Relation Type:</label>
+        <select id="relation-type" class="w-full p-2 border rounded">
+          <option value="less">Less than (<)</option>
+          <option value="less-equal">Less than or equal to (≤)</option>
+          <option value="equal">Equal to (=)</option>
+          <option value="greater">Greater than (>)</option>
+          <option value="greater-equal">Greater than or equal to (≥)</option>
+          <option value="divisibility">Divisibility (a divides b)</option>
+          <option value="custom">Custom Relation</option>
+        </select>
+      </div>
+      <div id="custom-relation-container" class="mb-4 hidden">
+        <label class="block text-gray-700 mb-2">Enter ordered pairs (a,b) comma separated:</label>
+        <input type="text" id="custom-relation" class="w-full p-2 border rounded" placeholder="e.g., (1,1), (1,2), (2,2)">
+        <p class="text-sm text-gray-600 mt-1">Format: (a,b), (c,d), ... where a,b,c,d are elements from your set</p>
+      </div>
+      <button id="analyze-relation" class="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Analyze Relation</button>
+      <div id="relation-result" class="mt-6"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
